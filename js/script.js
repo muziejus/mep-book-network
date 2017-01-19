@@ -31,7 +31,7 @@ d3.queue(1)
       .enter().append("line")
         .attr("id", function (d) { return d.id; })
         .attr("stroke-width", function(d) { return d.value; })
-        .on("click", lightUp);
+        .on("click", lightUpLine);
     var booknode = booksvg.append("g")
       .attr("class", "nodes")
       .selectAll("circle")
@@ -40,6 +40,7 @@ d3.queue(1)
         .attr("id", function(d) { return d.id; })
         .attr("r", 5)
         .attr("fill", d3.schemeCategory20c[0])
+        .on("click", lightUpDot)
         .call(d3.drag()
               .on("start", bookdragstarted)
               .on("drag", bookdragged)
@@ -52,7 +53,7 @@ d3.queue(1)
       .enter().append("line")
         .attr("id", function (d) { return d.id; })
         .attr("stroke-width", function(d) { return d.value; })
-        .on("click", lightUp);
+        .on("click", lightUpLine);
     var membernode = membersvg.append("g")
       .attr("class", "nodes")
       .selectAll("circle")
@@ -61,6 +62,7 @@ d3.queue(1)
         .attr("id", function(d) { return d.id; })
         .attr("r", 5)
         .attr("fill", d3.schemeCategory20c[0])
+        .on("click", lightUpDot)
         .call(d3.drag()
               .on("start", memberdragstarted)
               .on("drag", memberdragged)
@@ -163,11 +165,10 @@ function prepareBookLinks(callback){
   });
 }
 
-function lightUp(d) {
+function lightUpLine(d) {
   d3.selectAll(".litupline")
     .style("stroke", "#999")
     .classed("litupline", false);
-
   d3.selectAll(".litupdot")
     .attr("fill", d3.schemeCategory20c[0])
     .classed("litupdot", false);
@@ -176,8 +177,6 @@ function lightUp(d) {
     .classed("litupline", true)
     .style("stroke", "#0f0");
 
-  console.log(d.nodes);
-
   d.nodes.forEach(function(node) {
     d3.select("#" + node)
       .classed("litupdot", true)
@@ -185,3 +184,21 @@ function lightUp(d) {
   });
 }
 
+function lightUpDot(d) {
+  d3.selectAll(".litupline")
+    .style("stroke", "#999")
+    .classed("litupline", false);
+  d3.selectAll(".litupdot")
+    .attr("fill", d3.schemeCategory20c[0])
+    .classed("litupdot", false);
+
+  d3.select("#" + d.id)
+    .classed("litupdot", true)
+    .attr("fill", "#0f0");
+
+  d.edges.forEach(function(edge) {
+    d3.select("#" + edge)
+      .classed("litupline", true)
+      .style("stroke", "#0f0");
+  });
+}
