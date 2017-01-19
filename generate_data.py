@@ -3,8 +3,8 @@ import numpy as np
 import json
 
 fake = Factory.create()
-total = 5 
-average = 20
+total = 100 
+average = 10
 rentals = np.random.poisson(average, total)
 book_probs = np.random.poisson(average, total)
 book_ps = [probability / sum(book_probs) for probability in book_probs]
@@ -31,11 +31,9 @@ for book in books:
             if this_link == None:
                 inverse_link = next((link for link in book_links if (link["target"] == book['id'] and link["source"] == other_book)), None)
                 if inverse_link == None:
-                    book_links.append({"source": book['id'], "target": other_book, "value": 1})
-                else:
-                    book_links[book_links.index(inverse_link)]["value"] += 1
-            else:
-                book_links[book_links.index(this_link)]["value"] += 1
+                    members_who_borrowed_other_book = set([event[0] for event in events if event[1] == other_book])
+                    common_members = [member for member in members_who_borrowed if member in members_who_borrowed_other_book]
+                    book_links.append({"source": book['id'], "target": other_book, "value": len(common_members)})
 with open("books.json", "w") as outfile:
     json.dump(books, outfile)
 with open("book_links.json", "w") as outfile:
