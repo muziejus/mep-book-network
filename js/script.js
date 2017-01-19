@@ -29,12 +29,15 @@ d3.queue(1)
       .selectAll("line")
       .data(bookLinks)
       .enter().append("line")
-        .attr("stroke-width", function(d) { return d.value; });
+        .attr("id", function (d) { return d.id; })
+        .attr("stroke-width", function(d) { return d.value; })
+        .on("click", lightUp);
     var booknode = booksvg.append("g")
       .attr("class", "nodes")
       .selectAll("circle")
       .data(books)
       .enter().append("circle")
+        .attr("id", function(d) { return d.id; })
         .attr("r", 5)
         .attr("fill", d3.schemeCategory20c[0])
         .call(d3.drag()
@@ -47,14 +50,17 @@ d3.queue(1)
       .selectAll("line")
       .data(memberLinks)
       .enter().append("line")
-        .attr("stroke-width", function(d) { return d.value; });
+        .attr("id", function (d) { return d.id; })
+        .attr("stroke-width", function(d) { return d.value; })
+        .on("click", lightUp);
     var membernode = membersvg.append("g")
       .attr("class", "nodes")
       .selectAll("circle")
       .data(members)
       .enter().append("circle")
+        .attr("id", function(d) { return d.id; })
         .attr("r", 5)
-        .attr("fill", d3.schemeCategory20c[4])
+        .attr("fill", d3.schemeCategory20c[0])
         .call(d3.drag()
               .on("start", memberdragstarted)
               .on("drag", memberdragged)
@@ -154,6 +160,28 @@ function prepareBookLinks(callback){
   d3.json("book_links.json", function(error, book_links) {
     if (error) {throw error; }
     callback(null, book_links);
+  });
+}
+
+function lightUp(d) {
+  d3.selectAll(".litupline")
+    .style("stroke", "#999")
+    .classed("litupline", false);
+
+  d3.selectAll(".litupdot")
+    .attr("fill", d3.schemeCategory20c[0])
+    .classed("litupdot", false);
+
+  d3.select("#" + d.id)
+    .classed("litupline", true)
+    .style("stroke", "#0f0");
+
+  console.log(d.nodes);
+
+  d.nodes.forEach(function(node) {
+    d3.select("#" + node)
+      .classed("litupdot", true)
+      .attr("fill", "#0f0");
   });
 }
 
