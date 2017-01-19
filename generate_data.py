@@ -1,9 +1,10 @@
 from faker import Factory
 import numpy as np
+import json
 
 fake = Factory.create()
-total = 100 
-average = 10
+total = 5 
+average = 20
 rentals = np.random.poisson(average, total)
 book_probs = np.random.poisson(average, total)
 book_ps = [probability / sum(book_probs) for probability in book_probs]
@@ -35,3 +36,7 @@ for book in books:
                     book_links[book_links.index(inverse_link)]["value"] += 1
             else:
                 book_links[book_links.index(this_link)]["value"] += 1
+with open("books.json", "w") as outfile:
+    json.dump(books, outfile)
+with open("book_links.json", "w") as outfile:
+    json.dump(book_links, outfile)
