@@ -3,7 +3,7 @@ import numpy as np
 import json
 
 fake = Factory.create()
-total = 50 
+total = 30 
 average = 10
 shape = 2 # this is the weibull shape. The larger it is, the narrower the distribution will be around 1. 
 rentals = [int(average * x) for x in np.random.weibull(shape, total)]
