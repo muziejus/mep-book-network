@@ -14,10 +14,12 @@ books = [{} for _ in range(0, total)]
 for i, member in enumerate(members):
     member['name'] = fake.name()
     member['books'] = rentals[i]
+    member['edges'] = []
     member["id"] = "member_" + str(i + 1)
 for i, book in enumerate(books):
     book['title'] = " ".join(fake.words(np.random.randint(1,6))).title()
     book["id"] = "book_" + str(i + 1)
+    book['edges'] = []
 events = []
 for member in members:
     for _ in range(0, member['books']):
@@ -34,7 +36,11 @@ for book in books:
                 if inverse_link == None:
                     members_who_borrowed_other_book = set([event[0] for event in events if event[1] == other_book])
                     common_members = [member for member in members_who_borrowed if member in members_who_borrowed_other_book]
-                    book_links.append({"id": book["id"] + "_" + other_book, "source": book["id"], "target": other_book, "nodes": common_members, "value": len(common_members)})
+                    id = book["id"] + "_" + other_book
+                    for member in common_members:
+                        this_member = next(mem for mem in members if mem["id"] == member)
+                        members[members.index(this_member)]["edges"].append(id)
+                    book_links.append({"id": id, "source": book["id"], "target": other_book, "nodes": common_members, "value": len(common_members)})
 member_links = []
 for member in members:
     borrowed_books = set([event[1] for event in events if event[0] == member["id"]])
@@ -47,7 +53,11 @@ for member in members:
                 if inverse_link == None:
                     books_borrowed_other_member = set([event[1] for event in events if event[0] == other_member])
                     common_books = [book for book in borrowed_books if book in books_borrowed_other_member]
-                    member_links.append({"id": member["id"] + "_" + other_member, "source": member["id"], "target": other_member, "value": len(common_books), "nodes": common_books})
+                    id = member["id"] + "_" + other_member
+                    for book in common_books:
+                        this_book = next(boo for boo in books if boo["id"] == book)
+                        books[books.index(this_book)]["edges"].append(id)
+                    member_links.append({"id": id, "source": member["id"], "target": other_member, "value": len(common_books), "nodes": common_books})
 with open("books.json", "w") as outfile:
     json.dump(books, outfile)
 with open("book_links.json", "w") as outfile:
