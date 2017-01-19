@@ -3,10 +3,11 @@ import numpy as np
 import json
 
 fake = Factory.create()
-total = 100 
+total = 50 
 average = 10
-rentals = np.random.poisson(average, total)
-book_probs = np.random.poisson(average, total)
+shape = 2 # this is the weibull shape. The larger it is, the narrower the distribution will be around 1. 
+rentals = [int(average * x) for x in np.random.weibull(shape, total)]
+book_probs = [int(average * x) for x in np.random.weibull(shape, total)]
 book_ps = [probability / sum(book_probs) for probability in book_probs]
 members = [{} for _ in range(0, total)]
 books = [{} for _ in range(0, total)]
