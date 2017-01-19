@@ -30,6 +30,7 @@ svg {
 }
 
 .links line {
+  cursor: pointer;
   stroke: #999;
   stroke-opacity: 0.6;
 }
